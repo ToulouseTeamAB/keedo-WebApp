@@ -1,0 +1,59 @@
+<!--
+  Generated template for the ScanPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  http://ionicframework.com/docs/native/qr-scanner/
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Scan</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card>
+    <div >
+      <img style="width: 50%" src="./assets/imgs/book-default.png"/>
+    </div>
+      <ion-card-header>
+      <h1 *ngIf="ISBMformat">{{ISBMformat}}</h1>
+
+    </ion-card-header>
+
+    <ion-card-content>
+      <h1>code: </h1><p *ngIf="ISBMcode">{{ISBMcode}}</p>
+    </ion-card-content>
+    <ion-row>
+      <ion-col>
+        <button ion-button icon-left clear small>
+          <ion-icon name="thumbs-up"></ion-icon>
+          <div>12 Likes</div>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button icon-left clear small>
+          <ion-icon name="text"></ion-icon>
+          <div>4 Comments</div>
+        </button>
+      </ion-col>
+      <ion-col center text-center>
+        <ion-note>
+          11h ago
+        </ion-note>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+  <button *ngIf="!ISBMcode" ion-button round full large (click)="launchScan()">
+    <ion-icon name="barcode" is-active="false"></ion-icon>
+    Scan
+  </button>
+  <ion-fab *ngIf="ISBMcode" bottom right >
+    <button ion-fab (click)="launchScan()">
+      <ion-icon name="barcode" is-active="false"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-content>
