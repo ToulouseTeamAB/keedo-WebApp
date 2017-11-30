@@ -12,6 +12,9 @@ import {SearchPage} from "../pages/search/search";
 import {SettingsPage} from "../pages/settings/settings";
 import {ScanPage} from "../pages/scan/scan";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
+import {HTTP} from "@ionic-native/http";
+import {HttpClientModule} from "@angular/common/http";
+import {SuperTabsModule} from "ionic2-super-tabs";
 
 
 @NgModule({
@@ -25,6 +28,8 @@ import {BarcodeScanner} from "@ionic-native/barcode-scanner";
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    SuperTabsModule.forRoot(),
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -37,6 +42,7 @@ import {BarcodeScanner} from "@ionic-native/barcode-scanner";
     ScanPage
   ],
   providers: [
+    HTTP,
     BarcodeScanner,
     StatusBar,
     SplashScreen,

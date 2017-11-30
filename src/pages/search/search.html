@@ -13,6 +13,18 @@
 </ion-header>
 
 
-<ion-content padding>
-
+<ion-content padding (swipe)="swipeEvent($event)">
+  <ion-searchbar
+    [(ngModel)]="myInput"
+    [showCancelButton]="shouldShowCancel"
+    (ionInput)="onInput($event)"
+    (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let module of modules">
+      <h2>{{module}}</h2>
+      <p>blaba</p>
+      <button ion-button clear item-end>View</button>
+    </ion-item>
+  </ion-list>
 </ion-content>

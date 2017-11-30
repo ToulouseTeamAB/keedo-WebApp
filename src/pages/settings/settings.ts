@@ -21,5 +21,10 @@ export class SettingsPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad SettingsPage');
   }
-
+  swipeEvent(e) {
+    console.log(e);
+    if (e.direction === 4) {
+      this.navCtrl.parent.select(1);
+    }
+  }
 }

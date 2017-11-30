@@ -7,53 +7,103 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Scan</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
-  <ion-card>
-    <div >
-      <img style="width: 50%" src="./assets/imgs/book-default.png"/>
-    </div>
-      <ion-card-header>
-      <h1 *ngIf="ISBMformat">{{ISBMformat}}</h1>
-
-    </ion-card-header>
-
-    <ion-card-content>
-      <h1>code: </h1><p *ngIf="ISBMcode">{{ISBMcode}}</p>
-    </ion-card-content>
+<ion-content padding (swipe)="swipeEvent($event)">
+  <ion-grid>
     <ion-row>
       <ion-col>
-        <button ion-button icon-left clear small>
-          <ion-icon name="thumbs-up"></ion-icon>
-          <div>12 Likes</div>
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-left clear small>
-          <ion-icon name="text"></ion-icon>
-          <div>4 Comments</div>
-        </button>
-      </ion-col>
-      <ion-col center text-center>
-        <ion-note>
-          11h ago
-        </ion-note>
+        <form #f="ngForm" (ngSubmit)="getBook(f.value.ISBM)" novalidate>
+          <ion-list>
+            <ion-item>
+                <ion-label color="primary" fixed>ISBM code</ion-label>
+                <ion-input name="ISBM" ngModel required #ISBM="ngModel" type="search" placeholder="ISBM"  clearInput="True" ></ion-input>
+            </ion-item>
+          </ion-list>
+        </form>
       </ion-col>
     </ion-row>
-  </ion-card>
-  <button *ngIf="!ISBMcode" ion-button round full large (click)="launchScan()">
-    <ion-icon name="barcode" is-active="false"></ion-icon>
-    Scan
-  </button>
-  <ion-fab *ngIf="ISBMcode" bottom right >
+    <ion-row>
+      <ion-col>
+        <div *ngIf="books">
+          <ion-card *ngFor="let book of books">
+            <ion-grid>
+              <ion-row  style="text-align: center;">
+                <ion-col>
+                  1 of 3
+                </ion-col>
+                <ion-col >
+                  <img  [src]="book.volumeInfo.imageLinks.thumbnail"/>
+                </ion-col>
+                <ion-col>
+                3 of 3
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+
+
+              <ion-card-header>
+                <h1>{{book.volumeInfo.title}}</h1>
+                <h3>{{book.volumeInfo.authors}}</h3>
+              </ion-card-header>
+            <ion-card-content>
+            </ion-card-content>
+            <ion-row>
+              <ion-col>
+                <button ion-button icon-left clear small>
+                  <ion-icon name="card"></ion-icon>
+                  <div>Buy</div>
+                </button>
+              </ion-col>
+              <ion-col>
+                <button ion-button icon-left clear small>
+                  <ion-icon name="logo-usd"></ion-icon>
+                  <div>Sell</div>
+                </button>
+              </ion-col>
+              <ion-col center text-center>
+                <ion-note>
+                  11h ago
+                </ion-note>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </div>
+
+        <div *ngIf="searching===1">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row align-items-end>
+      <ion-col  align-self-end>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <ion-fab *ngIf="ISBMcode||books&&!myInput" bottom right >
     <button ion-fab (click)="launchScan()">
       <ion-icon name="barcode" is-active="false"></ion-icon>
     </button>
   </ion-fab>
+  <ion-fab id="scanFab" *ngIf="!books" bottom>
+    <button  ion-button  block (click)="launchScan()" >
+      <ion-icon name="barcode" is-active="false"></ion-icon>
+      Scan
+    </button>
+  </ion-fab>
 </ion-content>
+
+
+
+
