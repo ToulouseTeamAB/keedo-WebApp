@@ -17,19 +17,30 @@
   <ion-grid>
     <ion-row>
       <ion-col></ion-col>
-      <ion-col >
-        <button ion-button round color="danger">Login</button>
+      <ion-col>
+        <form #f="ngForm" (ngSubmit)="login(f)" novalidate>
+          <ion-list>
+            <ion-item>
+              <ion-label color="primary" fixed>E-mail</ion-label>
+              <ion-input name="email" ngModel required #email="ngModel" type="email" placeholder="E-mail"  clearInput="True" ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label color="primary" fixed>Password</ion-label>
+              <ion-input name="password" ngModel required #pass="ngModel" type="password" placeholder="Password"  clearInput="True" ></ion-input>
+            </ion-item>
+            <button ion-button block round color="primary">Login</button>
+          </ion-list>
+        </form>
       </ion-col>
       <ion-col></ion-col>
     </ion-row>
     <ion-row>
       <ion-col></ion-col>
       <ion-col >
-        <button ion-button round color="danger" (click)="switchpage()">Login later</button>
+        <button ion-button round block color="danger" (click)="switchpage()">Login later</button>
       </ion-col>
       <ion-col></ion-col>
     </ion-row>
   </ion-grid>
-
-
+  <p *ngIf="api">{{api}}</p>
 </ion-content>

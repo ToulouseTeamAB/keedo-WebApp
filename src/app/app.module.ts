@@ -14,7 +14,11 @@ import {ScanPage} from "../pages/scan/scan";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
 import {HTTP} from "@ionic-native/http";
 import {HttpClientModule} from "@angular/common/http";
-import {SuperTabsModule} from "ionic2-super-tabs";
+import {BuyListPage} from "../pages/buy-list/buy-list";
+import {InAppBrowser} from "@ionic-native/in-app-browser";
+import {Keyboard} from "@ionic-native/keyboard";
+import {IonicStorageModule} from "@ionic/storage";
+
 
 
 @NgModule({
@@ -24,12 +28,13 @@ import {SuperTabsModule} from "ionic2-super-tabs";
     LoginPage,
     SearchPage,
     SettingsPage,
-    ScanPage
+    ScanPage,
+    BuyListPage
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    SuperTabsModule.forRoot(),
+    IonicStorageModule.forRoot(),
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -39,11 +44,14 @@ import {SuperTabsModule} from "ionic2-super-tabs";
     LoginPage,
     SearchPage,
     SettingsPage,
-    ScanPage
+    ScanPage,
+    BuyListPage
   ],
   providers: [
     HTTP,
+    InAppBrowser,
     BarcodeScanner,
+    Keyboard,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler}

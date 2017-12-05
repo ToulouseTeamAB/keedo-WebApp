@@ -55,7 +55,7 @@
             </ion-card-content>
             <ion-row>
               <ion-col>
-                <button ion-button icon-left clear small>
+                <button ion-button icon-left clear small (click)="buyPage()">
                   <ion-icon name="card"></ion-icon>
                   <div>Buy</div>
                 </button>
@@ -98,7 +98,6 @@
   </ion-fab>
   <ion-fab id="scanFab" *ngIf="!books" bottom>
     <button  ion-button  block (click)="launchScan()" >
-      <ion-icon name="barcode" is-active="false"></ion-icon>
       Scan
     </button>
   </ion-fab>

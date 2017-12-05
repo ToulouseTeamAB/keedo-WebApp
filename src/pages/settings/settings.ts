@@ -27,4 +27,5 @@ export class SettingsPage {
       this.navCtrl.parent.select(1);
     }
   }
+
 }

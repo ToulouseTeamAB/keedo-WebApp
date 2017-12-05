@@ -1,8 +1,10 @@
 import {Component, ViewChild} from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import {IonicPage, NavController, NavParams, Tabs} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, Tabs, ToastController} from 'ionic-angular';
 import {HttpClient} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
+import {BuyListPage} from "../buy-list/buy-list";
+import {Keyboard} from "@ionic-native/keyboard";
 
 /**
  * Generated class for the ScanPage page.
@@ -31,7 +33,9 @@ export class ScanPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private barcodeScanner: BarcodeScanner,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private toastCtrl: ToastController,
+              private keyboard:Keyboard) {
 
 
   }
@@ -48,25 +52,52 @@ export class ScanPage {
       }
 
     }, (err) => {
+        let toast = this.toastCtrl.create({
+          message: 'Cannot access camera.',
+          duration: 3000,
+          position: 'bottom'
+        });
+
+        toast.onDidDismiss(() => {
+          //console.log('Dismissed toast');
+        });
+
+        toast.present();
     });
   }
 
   getBook(code:any){
+    this.keyboard.close();
     this.searching=1;
     this.http.get(this.dataUrl+code).subscribe(data => {
 
       this.books = data['items'];
       this.searching=0;
-      console.log(this.books)
+      console.log(this.books);
+      if(data['totalItems']==0){
+        let toast = this.toastCtrl.create({
+          message: 'Cannot access camera.',
+          duration: 3000,
+          position: 'bottom'
+        });
+
+        toast.onDidDismiss(() => {
+          //console.log('Dismissed toast');
+        });
+
+        toast.present();      }
     })
   }
   swipeEvent(e){
-    console.log(e);
+   // console.log(e);
     this.navCtrl.parent.select(1);
   }
   onSubmit(f: NgForm) {
-    console.log(f.value.ISBM);  // { first: '', last: '' }
-    console.log(f.valid);  // false
+  //  console.log(f.value.ISBM);  // { first: '', last: '' }
+    //console.log(f.valid);  // false
+  }
+  buyPage() {
+    this.navCtrl.push(BuyListPage);
   }
 }
 //<img [src]="books.imageLinks.thumbnail"/>
