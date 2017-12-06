@@ -28,15 +28,15 @@
         <p>{{book.price}}</p>
       </ion-item>
     </div>
-    <ion-header>
+    <ion-list-header>
       On Amazon
-    </ion-header>
-    <ion-item >
-      <h2>title</h2>
-      <h3>module</h3>
-      <p>price</p>
+    </ion-list-header>
+    <ion-item *ngIf="bookInfo" >
+      <h2>{{bookInfo.volumeInfo.title}}</h2>
+      <h3>{{bookInfo.volumeInfo.authors}}</h3>
       <button ion-button clear item-end (click)="openAppBrowser()">View</button>
     </ion-item>
   </ion-list>
 
 </ion-content>
+<!--1409096823-->

@@ -21,6 +21,10 @@ import {Keyboard} from "@ionic-native/keyboard";
 import {IonicStorageModule} from "@ionic/storage";
 import {RegisterPage} from "../pages/register/register";
 import {SellPage} from "../pages/sell/sell";
+import {ChangeuserPage} from "../pages/changeuser/changeuser";
+import {ChangeuseremailPage} from "../pages/changeuseremail/changeuseremail";
+import {ChangeuserusernamePage} from "../pages/changeuserusername/changeuserusername";
+import {ChangeuserpasswordPage} from "../pages/changeuserpassword/changeuserpassword";
 
 
 
@@ -34,7 +38,11 @@ import {SellPage} from "../pages/sell/sell";
     ScanPage,
     BuyListPage,
     RegisterPage,
-    SellPage
+    SellPage,
+    ChangeuserPage,
+    ChangeuseremailPage,
+    ChangeuserusernamePage,
+    ChangeuserpasswordPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +60,11 @@ import {SellPage} from "../pages/sell/sell";
     ScanPage,
     BuyListPage,
     RegisterPage,
-    SellPage
+    SellPage,
+    ChangeuserPage,
+    ChangeuseremailPage,
+    ChangeuserusernamePage,
+    ChangeuserpasswordPage
   ],
   providers: [
     HTTP,

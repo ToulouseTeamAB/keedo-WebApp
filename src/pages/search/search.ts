@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import {HTTP} from "@ionic-native/http";
+import {HttpClient} from "@angular/common/http";
 
 /**
  * Generated class for the SearchPage page.
@@ -16,46 +16,22 @@ import {HTTP} from "@ionic-native/http";
 })
 export class SearchPage {
   myInput: any;
-  modules: string[];
+  modules: any;
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,private http: HTTP) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,private http: HttpClient) {
     this.initializeModules();
   }
   onInput(ev: any){
 
   }
   initializeModules(){
-    this.modules = [
-      ' Accounting & Finance',
-      'Architecture',
-      'Art',
-      'Business & Management',
-      'Computing',
-      'Engineering',
-      'Nursing & Health',
-      'Pharmacy & Life Sciences',
-      'Biographies',
-      'Fiction',
-      'References & Study Guides'
-    ];
+    this.http.get('http://keedobook.fr/auth/v1/modules').subscribe(res => {
+      this.modules = res['modules'];
+      //console.log(res);
+    });
   }
   getBooks(){
-    this.http.get('http://ionic.io', {}, {})
-      .then(data => {
-
-        console.log(data.status);
-        console.log(data.data); // data received by server
-        console.log(data.headers);
-
-      })
-      .catch(error => {
-
-        console.log(error.status);
-        console.log(error.error); // error message as string
-        console.log(error.headers);
-
-      });
   }
   onCancel(ev: any){
 

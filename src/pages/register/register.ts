@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {NavController, NavParams, ToastController} from 'ionic-angular';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
 
 /**
@@ -27,8 +27,7 @@ export class RegisterPage {
 
     let truc = JSON.stringify(body);
     this.http.post('http://keedobook.fr/auth/v1/register', truc,{
-      params: new HttpParams().set('login', f.value.username).set('email', f.value.email).set('password',f.value.password),
-      //headers: new HttpHeaders().set('Content-Type','application/json'),
+      headers: new HttpHeaders().set('Content-Type','application/json'),
     }).subscribe(res=>{
       if(res['error']==false){
         this.toastCtrl.create({

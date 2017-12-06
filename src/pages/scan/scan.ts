@@ -95,16 +95,20 @@ export class ScanPage {
         toast.present();      }
     })
   }
-  swipeEvent(e){
-   // console.log(e);
-    this.navCtrl.parent.select(1);
-  }
-  onSubmit(f: NgForm) {
-  //  console.log(f.value.ISBM);  // { first: '', last: '' }
-    //console.log(f.valid);  // false
-  }
+
+
   buyPage() {
-    this.navCtrl.push(BuyListPage);
+    let book_ISBN;
+    let myV = this.books['0'].volumeInfo.industryIdentifiers;
+    for(let myB of myV){
+      if(myB.type==='ISBN_13'){
+        book_ISBN=myB.identifier;
+      }
+    }
+    this.navCtrl.push(BuyListPage,{
+      book_ISBN: book_ISBN,
+      books: this.books
+    });
   }
   sellPage(){
     this.navCtrl.push(SellPage,{

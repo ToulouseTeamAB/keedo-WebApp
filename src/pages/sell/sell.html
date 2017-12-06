@@ -28,14 +28,16 @@
       </ion-item>
       <ion-item>
         <ion-label color="primary">Description</ion-label>
-        <ion-input type="text" placeholder="Book condition..." clearInput="True"></ion-input>
+        <ion-input type="text" placeholder="Book condition..." clearInput="True"  [(ngModel)]="description"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label color="primary">Price</ion-label>
-        <ion-input placeholder="Price" type="number" clearInput="True"></ion-input>
+        <ion-input placeholder="Price" type="number" clearInput="True" [(ngModel)]="sellPrice"></ion-input>
 
       </ion-item>
     </ion-list>
   </div>
+  {{description}}
+  <button ion-button block round color="primary" (click)="postSellBook()">Put on Sale</button>
 </ion-content>
 <!--1409096823-->

@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
 import {NgForm} from "@angular/forms";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Storage} from "@ionic/storage";
 import {RegisterPage} from "../register/register";
 
@@ -43,22 +43,20 @@ export class LoginPage {
 
     let truc = JSON.stringify(body);
     this.http.post('http://keedobook.fr/auth/v1/login', truc,{
-      params: new HttpParams().set('email', f.value.email).set('password',f.value.password),
-      //headers: new HttpHeaders().set('Content-Type','application/json'),
-    })
-      // See below - subscribe() is still necessary when using post().
-      .subscribe(res=>{
+      headers: new HttpHeaders().set('Content-Type','application/json'),
+    }).subscribe(res => {
         this.api = res;
         if(res['error']==true){
           this.toastCtrl.create({
             message: res['message'],
-            duration: 3000,
+            showCloseButton: true,
             position: 'bottom'
           }).present();
         }else{
           this.storage.set('username',res['login']);
           this.storage.set('apiKey',res['apiKey'] );
           this.storage.set('id',res['id']);
+          this.storage.set('loggedIn',false);
           /* Or to get a key/value pair
           this.storage.get('id').then((val) => {
             console.log('Your id', val);

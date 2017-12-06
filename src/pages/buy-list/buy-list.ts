@@ -15,7 +15,9 @@ import {InAppBrowser} from "@ionic-native/in-app-browser";
 })
 export class BuyListPage {
   searching=0;
+  book_ISBN:any;
   books:any[];
+  bookInfo:any;
   dataUrl:string;
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -24,8 +26,14 @@ export class BuyListPage {
   }
 
   ionViewWillEnter(){
-    this.getBuyList('df');
+    //this.getBuyList('df');
   }
+  ionViewDidLoad() {
+    //console.log('ionViewDidLoad SellPage');
+    this.book_ISBN = this.navParams.get('book_ISBN');
+    this.bookInfo = this.navParams.get('books')['0'];
+  }
+
   getBuyList(code:any){
     this.searching=1;
     this.http.get(this.dataUrl+code).subscribe(data => {
@@ -36,7 +44,7 @@ export class BuyListPage {
     })
   }
   openAppBrowser(){
-    this.inAppBrowser.create('https://ionicframework.com/','_system','zoom=no');
+    this.inAppBrowser.create('https://www.amazon.co.uk/gp/search?index=books&linkCode=qs&keywords='+this.book_ISBN,'_system','zoom=no');
   }
 
 }
