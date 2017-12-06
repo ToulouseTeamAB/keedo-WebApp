@@ -16,4 +16,5 @@ export class TabsPage {
   constructor() {
 
   }
+
 }

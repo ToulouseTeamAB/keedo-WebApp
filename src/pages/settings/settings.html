@@ -13,6 +13,12 @@
 </ion-header>
 
 
-<ion-content padding (swipe)="swipeEvent($event)">
-
+<ion-content padding >
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <button ion-button block round color="primary" (click)="logoutPage()">Logout</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -5,6 +5,8 @@ import {HttpClient} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
 import {BuyListPage} from "../buy-list/buy-list";
 import {Keyboard} from "@ionic-native/keyboard";
+import {SellPage} from "../sell/sell";
+
 
 /**
  * Generated class for the ScanPage page.
@@ -29,19 +31,24 @@ export class ScanPage {
   events:any;
   private dataUrl = 'https://www.googleapis.com/books/v1/volumes?q=isbn:';
   //1409096823
+  id: any;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private barcodeScanner: BarcodeScanner,
               private http: HttpClient,
               private toastCtrl: ToastController,
-              private keyboard:Keyboard) {
-
-
-  }
+              private keyboard:Keyboard,
+  ) {}
   log(e){
     //console.log(e);
     this.events = e;
+  }
+  ionViewDidLoad() {
+    /*this.storage.get('apiKey').then((val) => {
+      console.log('Your id', val);
+      this.id =val;
+    }); //*/
   }
   launchScan(){
     this.barcodeScanner.scan().then((barcodeData) => {
@@ -98,6 +105,11 @@ export class ScanPage {
   }
   buyPage() {
     this.navCtrl.push(BuyListPage);
+  }
+  sellPage(){
+    this.navCtrl.push(SellPage,{
+      items: this.books
+    });
   }
 }
 //<img [src]="books.imageLinks.thumbnail"/>

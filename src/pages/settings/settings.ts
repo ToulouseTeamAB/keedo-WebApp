@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
+import {LoginPage} from "../login/login";
 
 /**
  * Generated class for the SettingsPage page.
@@ -15,17 +16,18 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SettingsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private toastCtrl: ToastController,
+  ) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SettingsPage');
+  logoutPage(){
+    this.navCtrl.setRoot(LoginPage);
+    this.toastCtrl.create({
+      message: 'Logged out.',
+      duration: 2000,
+      position: 'bottom'
+    }).present();
   }
-  swipeEvent(e) {
-    console.log(e);
-    if (e.direction === 4) {
-      this.navCtrl.parent.select(1);
-    }
-  }
-
 }

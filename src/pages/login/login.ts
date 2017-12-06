@@ -2,7 +2,9 @@ import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
 import {NgForm} from "@angular/forms";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Storage} from "@ionic/storage";
+import {RegisterPage} from "../register/register";
 
 /**
  * Generated class for the LoginPage page.
@@ -22,6 +24,7 @@ export class LoginPage {
               public navParams: NavParams,
               private http:HttpClient,
               private toastCtrl: ToastController,
+              private storage: Storage
   ) {
   }
 
@@ -32,36 +35,46 @@ export class LoginPage {
   switchpage(){
     this.navCtrl.setRoot(TabsPage);
   }
+  registerPage(){
+    this.navCtrl.push(RegisterPage);
+  }
   login(f: NgForm){
-    //  console.log(f.value.ISBM);  // { first: '', last: '' }
-    //console.log(f.valid);  // false
-    console.log(f.value.email);
-    console.log(f.value.password);
     const body = {email: f.value.email,password:f.value.password};
-    console.log(body);
 
     let truc = JSON.stringify(body);
-    console.log(truc);
-    this.http.post('https://keedobook.fr/auth/v1/login', body)
+    this.http.post('http://keedobook.fr/auth/v1/login', truc,{
+      params: new HttpParams().set('email', f.value.email).set('password',f.value.password),
+      //headers: new HttpHeaders().set('Content-Type','application/json'),
+    })
       // See below - subscribe() is still necessary when using post().
-      //'Access-Control-Allow-Origin': '*'
-      .subscribe(data=>{
-        this.api =data;
-        let toast = this.toastCtrl.create({
-          message: 'connected',
-          duration: 3000,
-          position: 'bottom'
-        });
-        toast.present();
+      .subscribe(res=>{
+        this.api = res;
+        if(res['error']==true){
+          this.toastCtrl.create({
+            message: res['message'],
+            duration: 3000,
+            position: 'bottom'
+          }).present();
+        }else{
+          this.storage.set('username',res['login']);
+          this.storage.set('apiKey',res['apiKey'] );
+          this.storage.set('id',res['id']);
+          /* Or to get a key/value pair
+          this.storage.get('id').then((val) => {
+            console.log('Your id', val);
+            id = val;
+          });
+          //*/
+          this.switchpage();
+
+          this.toastCtrl.create({
+            message: 'Logged in.',
+            duration: 2000,
+            position: 'bottom'
+          }).present();
+        }
       });
-    if(!this.api){
-      let toast = this.toastCtrl.create({
-        message: 'failed',
-        duration: 3000,
-        position: 'bottom'
-      });
-      toast.present();
-    }
+
 
   }
 
