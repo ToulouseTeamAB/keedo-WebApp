@@ -27,6 +27,22 @@
         <h3>Price: {{book.price}}</h3>
         <p>Condition: {{book.condition}}</p>
         <p>SellerID: {{book.sellerID}}</p>
+        <ion-grid>
+          <ion-row>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <button ion-button icon-left clear small (click)="buyPage(book)" >
+                <ion-icon name="eye"></ion-icon>
+                <div>View</div>
+              </button>
+            </ion-col>
+            <ion-col></ion-col>
+            <ion-col center text-center>
+              <p>$ {{book.price}}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </div>
     <ion-list-header>

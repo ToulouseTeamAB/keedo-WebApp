@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import {HttpClient} from "@angular/common/http";
 import {InAppBrowser} from "@ionic-native/in-app-browser";
+import {BuyPage} from "../buy/buy";
 
 /**
  * Generated class for the BuyListPage page.
@@ -42,10 +43,24 @@ export class BuyListPage {
       this.books = data['books'];
       this.searching=0;
 
+
     })
   }
   openAppBrowser(){
     this.inAppBrowser.create('https://www.amazon.co.uk/gp/search?index=books&linkCode=qs&keywords='+this.book_ISBN,'_system','zoom=no');
   }
-
+  buyPage(book:any){
+    let myBook =
+        {
+          title:this.bookInfo.title,
+          picture:this.bookInfo.picture,
+          author: this.bookInfo.author,
+          price: book.price,
+          sellerID:book.sellerID,
+          condition:book.condition};
+    this.navCtrl.push(BuyPage,{
+      book_ISBN: book.ISBN,
+      book: [myBook]
+    })
+  }
 }
