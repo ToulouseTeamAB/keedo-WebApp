@@ -29,6 +29,7 @@ import {ModuleBookListPage} from "../pages/module-book-list/module-book-list";
 import {TransactionsPage} from "../pages/transactions/transactions";
 import {TransactionsBuyPage} from "../pages/transactions-buy/transactions-buy";
 import {TransactionsSellPage} from "../pages/transactions-sell/transactions-sell";
+import {BuyPage} from "../pages/buy/buy";
 
 
 
@@ -50,7 +51,8 @@ import {TransactionsSellPage} from "../pages/transactions-sell/transactions-sell
     ModuleBookListPage,
     TransactionsPage,
     TransactionsBuyPage,
-    TransactionsSellPage
+    TransactionsSellPage,
+    BuyPage
   ],
   imports: [
     BrowserModule,
@@ -79,7 +81,8 @@ import {TransactionsSellPage} from "../pages/transactions-sell/transactions-sell
     ModuleBookListPage,
     TransactionsPage,
     TransactionsBuyPage,
-    TransactionsSellPage
+    TransactionsSellPage,
+    BuyPage
   ],
   providers: [
     SqlProvider,

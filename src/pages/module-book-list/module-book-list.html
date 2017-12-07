@@ -18,10 +18,14 @@
     <ion-list-header>
       Search results
     </ion-list-header>
-    <ion-item *ngFor="let book of books.books" >
-      <h2>{{book.ISBN}}</h2>
-      <h3>{{book.price}}</h3>
+    <ion-item *ngFor="let book of books.books"  >
+      <ion-thumbnail item-start>
+        <img  [src]="book.picture">
+      </ion-thumbnail>
+      <h2>{{book.title}}</h2>
+      <h3>{{book.author}}</h3>
       <h3>{{book.condition}}</h3>
+      <h3>{{book.price}}</h3>
       <ion-grid>
         <ion-row>
           <ion-col>

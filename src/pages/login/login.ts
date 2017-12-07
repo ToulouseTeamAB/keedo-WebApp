@@ -32,7 +32,13 @@ export class LoginPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
-    console.log(this.sqlProvider.getApiKey());
+    //console.log(this.sqlProvider.getApiKey());
+    this.sqlProvider.getLoggedIn().then(res => {
+      if (res===true){
+        this.navCtrl.setRoot(TabsPage);
+      }
+    });
+
   }
   switchpage(){
     this.navCtrl.setRoot(TabsPage);

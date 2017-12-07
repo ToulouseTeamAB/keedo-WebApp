@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {App, IonicPage, NavController, NavParams, ToastController} from 'ionic-angular';
 import {LoginPage} from "../login/login";
-import {Storage} from "@ionic/storage";
 import {ChangeuserPage} from "../changeuser/changeuser";
 import {SqlProvider} from "../../providers/sql/sql";
 import {TransactionsPage} from "../transactions/transactions";
@@ -18,21 +17,17 @@ import {TransactionsPage} from "../transactions/transactions";
   templateUrl: 'settings.html',
 })
 export class SettingsPage {
-
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private toastCtrl: ToastController,
-              private sqlProvider: SqlProvider
+              private sqlProvider: SqlProvider,
+              public app:App
   ) {
-  }
 
+  }
+  ionViewWillEnter(){
+  }
   logoutPage(){
-    //*
-    //this.storage.remove('username');
-    //this.storage.remove('apiKey');
-    //this.storage.remove('id');
-    //this.storage.set('loggedIn',false);
-    //
     let p1 = this.sqlProvider.removeUsername();
     let p2 = this.sqlProvider.removeApiKey();
     let p3 = this.sqlProvider.removeUserId();
@@ -41,18 +36,17 @@ export class SettingsPage {
     Promise.all([p1,p2,p3,p4])
       .then(() => {
         console.log('onfulfilled');
-        this.navCtrl.setRoot(LoginPage);
+        this.app.getRootNav().setRoot(LoginPage);
         this.toastCtrl.create({
           message: 'Logged out.',
           duration: 2000,
-          position: 'middle'
+          position: 'bottom'
         }).present();
       })
       .catch(res => {
         console.error(res);
       });
     //*/
-
 
     }
   changeUserPage(){

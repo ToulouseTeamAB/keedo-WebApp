@@ -33,13 +33,15 @@ export class TransactionsPage {
       this.idUser = res[0];
       this.apiKey = res[1];
       this.getTransactions();
-      //console.log(this.apiKey);
+      console.log(this.apiKey);
 
     })
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad TransactionsPage');
+    //this.getTransactions();
+
   }
 
   getTransactions(){

@@ -110,12 +110,15 @@ export class SellPage {
 
 
     const body = {
+      title: this.book.volumeInfo.title,
+      picture:this.book.volumeInfo.imageLinks.thumbnail,
+      author: this.book.volumeInfo.authors[0],
       ISBN: this.book_ISBN,
       modules: this.myModule,
       userID: this.userId,
       price: this.sellPrice,
       bookcondition: this.description};
-
+    //console.log(JSON.stringify(body));
     this.http.post('http://keedobook.fr/auth/v1/sellbook', JSON.stringify(body),{
       headers: new HttpHeaders().set('Authorization',this.apiKey),
     }).subscribe(res =>{

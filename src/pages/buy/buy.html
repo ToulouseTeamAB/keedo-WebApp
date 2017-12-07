@@ -1,0 +1,51 @@
+<!--
+  Generated template for the BuyPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Buy Book</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card *ngIf="book">
+    <ion-grid>
+      <ion-row  style="text-align: center;">
+        <ion-col></ion-col>
+        <ion-col><img [src]="book.picture"/></ion-col>
+        <ion-col></ion-col>
+      </ion-row>
+    </ion-grid>
+
+
+    <ion-card-header>
+      <h1>{{book.title}}</h1>
+      <h3>{{book.author}}</h3>
+    </ion-card-header>
+    <ion-card-content>
+      {{book.bookcondition}}
+    </ion-card-content>
+    <ion-grid>
+      <ion-row>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <button ion-button icon-left clear small >
+            <ion-icon name="card"></ion-icon>
+            <div>Buy</div>
+          </button>
+        </ion-col>
+        <ion-col></ion-col>
+        <ion-col center text-center>
+          <p>$ {{book.price}}</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>

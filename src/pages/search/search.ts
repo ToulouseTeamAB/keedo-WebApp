@@ -47,6 +47,7 @@ export class SearchPage {
         this.showResults = true;
         this.searching = false;
         this.searchResults = res;
+        console.log(res);
       },error => {
         console.error('Search http error :'+error.message);
         console.error('Search http error :'+error.name);

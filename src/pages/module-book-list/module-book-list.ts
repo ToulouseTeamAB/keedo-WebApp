@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import {HttpClient} from "@angular/common/http";
+import {BuyListPage} from "../buy-list/buy-list";
+import {BuyPage} from "../buy/buy";
 
 /**
  * Generated class for the ModuleBookListPage page.
@@ -36,5 +38,11 @@ export class ModuleBookListPage {
       this.books = res;
       console.log(res);
     });
+  }
+  buyPage(book:any){
+    this.navCtrl.push(BuyPage,{
+      book_ISBN: book.ISBN,
+      book: [book]
+    })
   }
 }

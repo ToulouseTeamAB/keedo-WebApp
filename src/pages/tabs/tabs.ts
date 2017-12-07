@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import {ScanPage} from "../scan/scan";
 import {SearchPage} from "../search/search";
 import {SettingsPage} from "../settings/settings";
+import {SqlProvider} from "../../providers/sql/sql";
+import {NavController, NavParams} from "ionic-angular";
 
 @Component({
   templateUrl: 'tabs.html'
@@ -12,26 +14,19 @@ export class TabsPage {
   tab2Root = SearchPage;
   tab3Root = SettingsPage;
 
-  constructor() {
+  constructor(private sqlProvider: SqlProvider,
+              public navCtrl: NavController,
+              public navParams: NavParams,) {
+
+  }
+  ionViewWillEnter() {
+    console.log('tabsPage');
 
 
   }
-  ionViewDidLoad() {
-    /*
-    console.log('tabs');
-    this.storage.get('apiKey').then(value => {
-      console.log(value);
-      //*
-      if(value == null){
-        this.isLoggedIn = false;
-      }else{
-        this.isLoggedIn = true;
-      }
+  ionViewWillUnload(){
+    console.log('tabsPage');
 
-      this.storage.set('loggedIn',this.isLoggedIn);
-
-    });
-*/
   }
 
 }
