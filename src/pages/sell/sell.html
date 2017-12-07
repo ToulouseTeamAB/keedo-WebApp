@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>sell</ion-title>
+    <ion-title>Sell</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -34,6 +34,12 @@
         <ion-label color="primary">Price</ion-label>
         <ion-input placeholder="Price" type="number" clearInput="True" [(ngModel)]="sellPrice"></ion-input>
 
+      </ion-item>
+      <ion-item>
+        <ion-label>Modules</ion-label>
+        <ion-select [(ngModel)]="myModule">
+          <ion-option *ngFor="let module of modules" [value]="module.id">{{module.label}}</ion-option>
+        </ion-select>
       </ion-item>
     </ion-list>
   </div>

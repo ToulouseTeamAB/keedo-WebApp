@@ -20,21 +20,20 @@
         Books for sell
       </ion-list-header>
       <ion-item *ngFor="let book of books">
-        <ion-avatar item-start>
-          <img src="assets/img/avatar-finn.png">
-        </ion-avatar>
-        <h2>{{book.title}}</h2>
-        <h3>{{book.module}}</h3>
-        <p>{{book.price}}</p>
+        <ion-thumbnail item-start>
+          <img  [src]="bookInfo.picture">
+        </ion-thumbnail>
+        <h2>Title: {{bookInfo.title}}</h2>
+        <h3>Price: {{book.price}}</h3>
+        <p>Condition: {{book.condition}}</p>
+        <p>SellerID: {{book.sellerID}}</p>
       </ion-item>
     </div>
     <ion-list-header>
       On Amazon
     </ion-list-header>
-    <ion-item *ngIf="bookInfo" >
-      <h2>{{bookInfo.volumeInfo.title}}</h2>
-      <h3>{{bookInfo.volumeInfo.authors}}</h3>
-      <button ion-button clear item-end (click)="openAppBrowser()">View</button>
+    <ion-item *ngIf="this.book_ISBN" >
+      <button ion-button clear item-end (click)="openAppBrowser()">View on Amazon</button>
     </ion-item>
   </ion-list>
 

@@ -12,7 +12,6 @@ import {SearchPage} from "../pages/search/search";
 import {SettingsPage} from "../pages/settings/settings";
 import {ScanPage} from "../pages/scan/scan";
 import {BarcodeScanner} from "@ionic-native/barcode-scanner";
-import {HTTP} from "@ionic-native/http";
 import {HttpClientModule} from "@angular/common/http";
 import {BuyListPage} from "../pages/buy-list/buy-list";
 
@@ -25,6 +24,11 @@ import {ChangeuserPage} from "../pages/changeuser/changeuser";
 import {ChangeuseremailPage} from "../pages/changeuseremail/changeuseremail";
 import {ChangeuserusernamePage} from "../pages/changeuserusername/changeuserusername";
 import {ChangeuserpasswordPage} from "../pages/changeuserpassword/changeuserpassword";
+import {SqlProvider} from '../providers/sql/sql';
+import {ModuleBookListPage} from "../pages/module-book-list/module-book-list";
+import {TransactionsPage} from "../pages/transactions/transactions";
+import {TransactionsBuyPage} from "../pages/transactions-buy/transactions-buy";
+import {TransactionsSellPage} from "../pages/transactions-sell/transactions-sell";
 
 
 
@@ -42,12 +46,19 @@ import {ChangeuserpasswordPage} from "../pages/changeuserpassword/changeuserpass
     ChangeuserPage,
     ChangeuseremailPage,
     ChangeuserusernamePage,
-    ChangeuserpasswordPage
+    ChangeuserpasswordPage,
+    ModuleBookListPage,
+    TransactionsPage,
+    TransactionsBuyPage,
+    TransactionsSellPage
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    IonicStorageModule.forRoot(),
+    IonicStorageModule.forRoot({
+      name: '__mydb',
+      driverOrder: ['indexeddb', 'sqlite', 'websql']
+    }),
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -64,16 +75,22 @@ import {ChangeuserpasswordPage} from "../pages/changeuserpassword/changeuserpass
     ChangeuserPage,
     ChangeuseremailPage,
     ChangeuserusernamePage,
-    ChangeuserpasswordPage
+    ChangeuserpasswordPage,
+    ModuleBookListPage,
+    TransactionsPage,
+    TransactionsBuyPage,
+    TransactionsSellPage
   ],
   providers: [
-    HTTP,
+    SqlProvider,
+    Storage,
     InAppBrowser,
     BarcodeScanner,
     Keyboard,
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+
   ]
 })
 export class AppModule {}

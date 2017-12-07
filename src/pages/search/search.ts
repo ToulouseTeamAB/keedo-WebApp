@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Keyboard} from "@ionic-native/keyboard";
+import {BuyListPage} from "../buy-list/buy-list";
+import {ModuleBookListPage} from "../module-book-list/module-book-list";
 
 /**
  * Generated class for the SearchPage page.
@@ -15,15 +18,45 @@ import {HttpClient} from "@angular/common/http";
   templateUrl: 'search.html',
 })
 export class SearchPage {
-  myInput: any;
+  bookName: any;
   modules: any;
+  searchResults: any;
+  showResults: boolean;
+  searching: boolean;
+  httpSearch: any;
 
-
-  constructor(public navCtrl: NavController, public navParams: NavParams,private http: HttpClient) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private http: HttpClient,
+              private keyboard:Keyboard) {
     this.initializeModules();
+    this.showResults = false;
+    this.searching = false;
+  }
+  onFocusOut(e:any){
+    this.keyboard.close();
   }
   onInput(ev: any){
 
+    if(this.bookName.length>0){
+      this.searching = true;
+
+      this.httpSearch = this.http.get('http://keedobook.fr/auth/v1/search',{
+        params: new HttpParams().set('bookName', this.bookName),
+      }).subscribe(res => {
+        this.showResults = true;
+        this.searching = false;
+        this.searchResults = res;
+      },error => {
+        console.error('Search http error :'+error.message);
+        console.error('Search http error :'+error.name);
+
+        this.searching = false;
+      });
+    }else{
+      this.searching = false;
+      this.showResults = false;
+    }
   }
   initializeModules(){
     this.http.get('http://keedobook.fr/auth/v1/modules').subscribe(res => {
@@ -36,13 +69,31 @@ export class SearchPage {
   onCancel(ev: any){
 
   }
-  swipeEvent(e){
-    console.log(e);
-    if(e.direction===2) {
-      this.navCtrl.parent.select(2);
+  buyPage(book:any){
+    this.navCtrl.push(BuyListPage,{
+      book_ISBN: book.ISBN,
+      book: [book]
+    })
+  }
+  /*
+  sellPage(book:any){
+    let volume = {
+      book:{
+        volumeInfo:{
+          imageLinks:{
+            thumbnail:book.picture
+          },
+          title:book.title,
+          authors:book.author
+        }
+      }
     }
-    if(e.direction===4) {
-      this.navCtrl.parent.select(0);
-    }
+  }
+  //*/
+  viewModule(id:any,title:any){
+    this.navCtrl.push(ModuleBookListPage,{
+      id:id,
+      title:title
+    })
   }
 }

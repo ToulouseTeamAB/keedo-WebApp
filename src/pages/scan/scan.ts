@@ -44,12 +44,14 @@ export class ScanPage {
     //console.log(e);
     this.events = e;
   }
+
   ionViewDidLoad() {
     /*this.storage.get('apiKey').then((val) => {
       console.log('Your id', val);
       this.id =val;
     }); //*/
   }
+
   launchScan(){
     this.barcodeScanner.scan().then((barcodeData) => {
       this.ISBMcode = barcodeData.text;
@@ -83,7 +85,7 @@ export class ScanPage {
       console.log(this.books);
       if(data['totalItems']==0){
         let toast = this.toastCtrl.create({
-          message: 'Cannot access camera.',
+          message: 'Error in ISBN',
           duration: 3000,
           position: 'bottom'
         });
@@ -96,8 +98,16 @@ export class ScanPage {
     })
   }
 
-
   buyPage() {
+    let pic = this.books['0'].volumeInfo.imageLinks.thumbnail;
+    console.log(this.books['0'].volumeInfo.imageLinks.thumbnail);
+    let spebook = {
+
+        picture:pic,
+        title:this.books['0'].volumeInfo.title,
+
+    };
+    //1409096823
     let book_ISBN;
     let myV = this.books['0'].volumeInfo.industryIdentifiers;
     for(let myB of myV){
@@ -107,13 +117,13 @@ export class ScanPage {
     }
     this.navCtrl.push(BuyListPage,{
       book_ISBN: book_ISBN,
-      books: this.books
+      book: [spebook]
     });
   }
+
   sellPage(){
     this.navCtrl.push(SellPage,{
       items: this.books
     });
   }
 }
-//<img [src]="books.imageLinks.thumbnail"/>

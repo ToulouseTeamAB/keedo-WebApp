@@ -14,15 +14,15 @@
 </ion-header>
 
 
-<ion-content padding (swipe)="swipeEvent($event)">
+<ion-content padding >
   <ion-grid>
     <ion-row>
       <ion-col>
-        <form #f="ngForm" (ngSubmit)="getBook(f.value.ISBM)" novalidate>
+        <form #f="ngForm" (ngSubmit)="getBook(f.value.ISBN)" novalidate>
           <ion-list>
             <ion-item>
-                <ion-label color="primary" fixed>ISBM code</ion-label>
-                <ion-input name="ISBM" ngModel required #ISBM="ngModel" type="search" placeholder="ISBM"  clearInput="True" ></ion-input>
+                <ion-label color="primary" fixed>ISBN code</ion-label>
+                <ion-input name="ISBN" ngModel required #ISBM="ngModel" type="number" placeholder="ISBN"  clearInput="True" ></ion-input>
             </ion-item>
           </ion-list>
         </form>
@@ -34,15 +34,9 @@
           <ion-card *ngFor="let book of books">
             <ion-grid>
               <ion-row  style="text-align: center;">
-                <ion-col>
-                  1 of 3
-                </ion-col>
-                <ion-col >
-                  <img  [src]="book.volumeInfo.imageLinks.thumbnail"/>
-                </ion-col>
-                <ion-col>
-                3 of 3
-                </ion-col>
+                <ion-col></ion-col>
+                <ion-col><img [src]="book.volumeInfo.imageLinks.thumbnail"/></ion-col>
+                <ion-col></ion-col>
               </ion-row>
             </ion-grid>
 
@@ -53,25 +47,27 @@
               </ion-card-header>
             <ion-card-content>
             </ion-card-content>
-            <ion-row>
-              <ion-col>
-                <button ion-button icon-left clear small (click)="buyPage()">
-                  <ion-icon name="card"></ion-icon>
-                  <div>Buy</div>
-                </button>
-              </ion-col>
-              <ion-col>
-                <button ion-button icon-left clear small (click)="sellPage()">
-                  <ion-icon name="logo-usd"></ion-icon>
-                  <div>Sell</div>
-                </button>
-              </ion-col>
-              <ion-col center text-center>
-                <ion-note>
-                  11h ago
-                </ion-note>
-              </ion-col>
-            </ion-row>
+              <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <button ion-button icon-left clear small (click)="buyPage()">
+                    <ion-icon name="card"></ion-icon>
+                    <div>Buy</div>
+                  </button>
+                </ion-col>
+                <ion-col>
+                  <button ion-button icon-left clear small (click)="sellPage()">
+                    <ion-icon name="logo-usd"></ion-icon>
+                    <div>Sell</div>
+                  </button>
+                </ion-col>
+                <ion-col center text-center>
+                  <ion-note>
+                    11h ago
+                  </ion-note>
+                </ion-col>
+              </ion-row>
+              </ion-grid>
           </ion-card>
         </div>
 

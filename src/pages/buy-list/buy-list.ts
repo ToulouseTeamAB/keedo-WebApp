@@ -16,9 +16,8 @@ import {InAppBrowser} from "@ionic-native/in-app-browser";
 export class BuyListPage {
   searching=0;
   book_ISBN:any;
-  books:any[];
+  books:any;
   bookInfo:any;
-  dataUrl:string;
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private http:HttpClient,
@@ -26,19 +25,21 @@ export class BuyListPage {
   }
 
   ionViewWillEnter(){
-    //this.getBuyList('df');
+    this.getBuyList();
   }
   ionViewDidLoad() {
     //console.log('ionViewDidLoad SellPage');
     this.book_ISBN = this.navParams.get('book_ISBN');
-    this.bookInfo = this.navParams.get('books')['0'];
+    this.bookInfo = this.navParams.get('book')['0'];
+
   }
 
-  getBuyList(code:any){
+  getBuyList(){
     this.searching=1;
-    this.http.get(this.dataUrl+code).subscribe(data => {
-
-      this.books = data['items'];
+    this.http.get('http://keedobook.fr/auth/v1/books/'+this.book_ISBN,{
+    }).subscribe(data => {
+      console.log(data);
+      this.books = data['books'];
       this.searching=0;
 
     })
