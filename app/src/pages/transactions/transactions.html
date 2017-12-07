@@ -1,0 +1,21 @@
+<!--
+  Generated template for the TransactionsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Transactions</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-tabs tabsPlacement="top">
+    <ion-tab [root]="tab1Root" tabTitle="Buy" tabIcon="card" [rootParams]="dataTransBuy"></ion-tab>
+    <ion-tab [root]="tab2Root" tabTitle="Sell" tabIcon="logo-usd" [rootParams]="dataTransSell"></ion-tab>
+  </ion-tabs>
+</ion-content>
