@@ -148,7 +148,7 @@ class DbHandler {
      * @param String $user_id user id primary key in user table
      */
     public function getApiKeyById($user_id) {
-        $stmt = $this->conn->prepare("SELECT api_key FROM keedo_users WHERE id = ?");
+        $stmt = $this->conn->prepare("SELECT api_key FROM keedo_users WHERE ID = ?");
         $stmt->bind_param("i", $user_id);
         if ($stmt->execute()) {
             // $api_key = $stmt->get_result()->fetch_assoc();
@@ -166,7 +166,7 @@ class DbHandler {
      * @param String $api_key user api key
      */
     public function getUserId($api_key) {
-        $stmt = $this->conn->prepare("SELECT id FROM keedo_users WHERE api_key = ?");
+        $stmt = $this->conn->prepare("SELECT ID FROM keedo_users WHERE api_key = ?");
         $stmt->bind_param("s", $api_key);
         if ($stmt->execute()) {
             $stmt->bind_result($user_id);
@@ -185,7 +185,7 @@ class DbHandler {
      * @return boolean
      */
     public function isValidApiKey($api_key) {
-        $stmt = $this->conn->prepare("SELECT id from keedo_users WHERE api_key = ?");
+        $stmt = $this->conn->prepare("SELECT ID from keedo_users WHERE api_key = ?");
         $stmt->bind_param("s", $api_key);
         $stmt->execute();
         $stmt->store_result();
@@ -231,9 +231,9 @@ class DbHandler {
      * @param String $ISBN is ID of the book
      * @param String $modules is the subject (computing/sciences/law/etc..)
      */
-    public function sellBook($ISBN,$modules,$userID,$price,$bookcondition, $title, $author, $picture) {
-        $stmt = $this->conn->prepare("INSERT INTO keedo_books(ISBN,modules,title,author,picture) VALUES (?,?,?,?,?)");
-        $stmt->bind_param("sisss",$ISBN, $modules, $title, $author, $picture);
+    public function sellBook($ISBN,$module,$userID,$price,$bookcondition, $title, $author, $picture) {
+        $stmt = $this->conn->prepare("INSERT INTO keedo_books(ISBN,module,title,author,picture) VALUES (?,?,?,?,?)");
+        $stmt->bind_param("sisss",$ISBN, $module, $title, $author, $picture);
         $result = $stmt->execute();
         $stmt->close();
 
@@ -250,7 +250,7 @@ class DbHandler {
     }
 
     public function addOwner($ISBN,$userID,$price,$bookcondition) {
-            $stmt = $this->conn->prepare("INSERT INTO keedo_books_own (ISBN,ID,price,bookcondition) VALUES (?,?,?,?)");
+            $stmt = $this->conn->prepare("INSERT INTO keedo_books_own (ISBN,user,price,bookcondition) VALUES (?,?,?,?)");
             $stmt->bind_param("sids",$ISBN, $userID, $price, $bookcondition);
             $result = $stmt->execute();
 
@@ -302,7 +302,7 @@ class DbHandler {
      * @param String $task_id id of the task
      */
     public function getBookByModule($id) {
-        $stmt = $this->conn->prepare("SELECT * FROM keedo_books kb1, keedo_books_own kdo WHERE kdo.ISBN IN (SELECT ISBN FROM keedo_books kb WHERE modules=? AND kdo.ISBN=kb.ISBN);");
+        $stmt = $this->conn->prepare("SELECT * FROM keedo_books kb1, keedo_books_own kdo WHERE kdo.ISBN IN (SELECT ISBN FROM keedo_books kb WHERE module=? AND kdo.ISBN=kb.ISBN);");
         $stmt->bind_param("i",$id);
         $stmt->execute();
         $books = $stmt->get_result();
@@ -373,7 +373,7 @@ class DbHandler {
      * @return array for the user
      */
     public function getAdvertLog($idUser) {
-        $stmt = $this->conn->prepare("SELECT keedo_books_own.ISBN, keedo_users.login, keedo_books_own.bookCondition, keedo_books_own.price FROM keedo_books_own, keedo_users WHERE keedo_books_own.ID = ? AND keedo_users.ID =  keedo_books_own.ID");
+        $stmt = $this->conn->prepare("SELECT keedo_books_own.ISBN, keedo_users.login, keedo_books_own.bookCondition, keedo_books_own.price FROM keedo_books_own, keedo_users WHERE keedo_books_own.user = ? AND keedo_users.ID =  keedo_books_own.user");
         $stmt->bind_param("i", $idUser);
         $stmt->execute();
         $ISBNReturn = $stmt->get_result();
@@ -381,7 +381,7 @@ class DbHandler {
         return $ISBNReturn;
     }
 
-public function buyBook($ISBN,$modules,$sellerID,$buyerID,$bookcondition,$price,$status){
+public function buyBook($ISBN,$module,$sellerID,$buyerID,$bookcondition,$price,$status){
 
 
               /* //INSERT INTO keedo_books_selling
@@ -419,7 +419,7 @@ public function buyBook($ISBN,$modules,$sellerID,$buyerID,$bookcondition,$price,
     * @param String
     */
     public function deleteAvailableBook($ISBN,$sellerID){
-          $stmt = $this->conn->prepare("DELETE FROM keedo_books_own WHERE ISBN=? AND ID=?");
+          $stmt = $this->conn->prepare("DELETE FROM keedo_books_own WHERE ISBN=? AND user=?");
           $stmt->bind_param("si", $ISBN, $sellerID);
           if($stmt->execute()){
               return TRUE;
@@ -437,7 +437,7 @@ public function buyBook($ISBN,$modules,$sellerID,$buyerID,$bookcondition,$price,
      * @param String $status task status
      */
     public function updateTask($user_id, $task_id, $task, $status) {
-        $stmt = $this->conn->prepare("UPDATE tasks t, user_tasks ut set t.task = ?, t.status = ? WHERE t.id = ? AND t.id = ut.task_id AND ut.user_id = ?");
+        $stmt = $this->conn->prepare("UPDATE tasks t, user_tasks ut set t.task = ?, t.status = ? WHERE t.ID = ? AND t.ID = ut.task_ID AND ut.user_ID = ?");
         $stmt->bind_param("siii", $task, $status, $task_id, $user_id);
         $stmt->execute();
         $num_affected_rows = $stmt->affected_rows;
@@ -450,7 +450,7 @@ public function buyBook($ISBN,$modules,$sellerID,$buyerID,$bookcondition,$price,
      * @param String $task_id id of the task to delete
      */
     public function deleteTask($user_id, $task_id) {
-        $stmt = $this->conn->prepare("DELETE t FROM tasks t, user_tasks ut WHERE t.id = ? AND ut.task_id = t.id AND ut.user_id = ?");
+        $stmt = $this->conn->prepare("DELETE t FROM tasks t, user_tasks ut WHERE t.ID = ? AND ut.task_id = t.ID AND ut.user_id = ?");
         $stmt->bind_param("ii", $task_id, $user_id);
         $stmt->execute();
         $num_affected_rows = $stmt->affected_rows;

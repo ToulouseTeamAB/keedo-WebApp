@@ -116,7 +116,7 @@ $app->post('/login', function() use ($app) {
 
                 if ($user != NULL) {
                     $response["error"] = false;
-                    $response['id'] = $user['id'];
+                    $response['id'] = $user['ID'];
                     $response['login'] = $user['login'];
                     $response['email'] = $user['email'];
                     $response['apiKey'] = $user['api_key'];
@@ -353,7 +353,7 @@ $app->get('/modules', function() {
             // looping through result and preparing tasks array
             while ($modules = $result->fetch_assoc()) {
                 $tmp = array();
-                $tmp["id"] = $modules["id"];
+                $tmp["id"] = $modules["ID"];
                 $tmp["label"] = $modules["label"];
                 array_push($response["modules"], $tmp);
             }
@@ -454,7 +454,7 @@ $app->get('/tasks', 'authenticate', function() {
             // looping through result and preparing tasks array
             while ($task = $result->fetch_assoc()) {
                 $tmp = array();
-                $tmp["id"] = $task["id"];
+                $tmp["id"] = $task["ID"];
                 $tmp["task"] = $task["task"];
                 $tmp["status"] = $task["status"];
                 $tmp["registered"] = $task["registered"];
@@ -480,7 +480,7 @@ $app->get('/tasks/:id', 'authenticate', function($task_id) {
 
             if ($result != NULL) {
                 $response["error"] = false;
-                $response["id"] = $result["id"];
+                $response["id"] = $result["ID"];
                 $response["task"] = $result["task"];
                 $response["status"] = $result["status"];
                 $response["registered"] = $result["registered"];
