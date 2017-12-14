@@ -1,0 +1,104 @@
+<!--
+  Generated template for the ScanPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  http://ionicframework.com/docs/native/qr-scanner/
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Scan</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding >
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <form #f="ngForm" (ngSubmit)="getBook(f.value.ISBN)" novalidate>
+          <ion-list>
+            <ion-item>
+                <ion-label color="primary" fixed>ISBN code</ion-label>
+                <ion-input name="ISBN" ngModel required #ISBM="ngModel" type="number" placeholder="ISBN"  clearInput="True" ></ion-input>
+            </ion-item>
+          </ion-list>
+        </form>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div *ngIf="books">
+          <ion-card *ngFor="let book of books">
+            <ion-grid>
+              <ion-row  style="text-align: center;">
+                <ion-col></ion-col>
+                <ion-col><img [src]="book.volumeInfo.imageLinks.thumbnail"/></ion-col>
+                <ion-col></ion-col>
+              </ion-row>
+            </ion-grid>
+
+
+              <ion-card-header>
+                <h1>{{book.volumeInfo.title}}</h1>
+                <h3>{{book.volumeInfo.authors}}</h3>
+              </ion-card-header>
+            <ion-card-content>
+            </ion-card-content>
+              <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <button ion-button icon-left clear small (click)="buyPage()">
+                    <ion-icon name="card"></ion-icon>
+                    <div>Buy</div>
+                  </button>
+                </ion-col>
+                <ion-col>
+                  <button ion-button icon-left clear small (click)="sellPage()">
+                    <ion-icon name="logo-usd"></ion-icon>
+                    <div>Sell</div>
+                  </button>
+                </ion-col>
+                <ion-col center text-center>
+                  <ion-note>
+                    11h ago
+                  </ion-note>
+                </ion-col>
+              </ion-row>
+              </ion-grid>
+          </ion-card>
+        </div>
+
+        <div *ngIf="searching===1">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row align-items-end>
+      <ion-col  align-self-end>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+  <ion-fab *ngIf="ISBMcode||books&&!myInput" bottom right >
+    <button ion-fab (click)="launchScan()">
+      <ion-icon name="barcode" is-active="false"></ion-icon>
+    </button>
+  </ion-fab>
+  <ion-fab id="scanFab" *ngIf="!books" bottom>
+    <button  ion-button  block (click)="launchScan()" >
+      Scan
+    </button>
+  </ion-fab>
+</ion-content>
+
+
+
+

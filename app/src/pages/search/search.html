@@ -1,0 +1,72 @@
+<!--
+  Generated template for the SearchPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Search</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding >
+    <ion-searchbar
+      [debounce]="500"
+      [(ngModel)]="bookName"
+      [showCancelButton]="shouldShowCancel"
+      (ionInput)="onInput($event)"
+      (ionCancel)="onCancel($event)"
+      (onfocusout)="onFocusOut($event)">
+    </ion-searchbar>
+  <ion-grid>
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col><ion-spinner *ngIf="searching" name="crescent" ></ion-spinner></ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list *ngIf="showResults">
+    <ion-list-header>
+      Search results
+    </ion-list-header>
+      <ion-item *ngFor="let book of searchResults" >
+        <ion-thumbnail item-start>
+          <img  [src]="book.picture">
+        </ion-thumbnail>
+        <h2>{{book.title}}</h2>
+        <h3>{{book.author}}</h3>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <button ion-button icon-left clear small [disabled]="!book.inDB" (click)="buyPage(book)">
+                <ion-icon name="eye"></ion-icon>
+                <div>View</div>
+              </button>
+            </ion-col>
+            <ion-col>
+              <!--<button ion-button icon-left clear small (click)="sellPage(book)">
+                <ion-icon name="logo-usd"></ion-icon>
+                <div>Sell</div>
+              </button>-->
+            </ion-col>
+            <ion-col text-center align-self-center	>
+              <ion-note [ngClass]="{'available': book.inDB === true, 'unavailable': book.inDB===false}">
+               {{book.inDB?'Available':'Unavailable'}}
+              </ion-note>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    <!-----===========================------>
+  </ion-list>
+  <ion-list *ngIf="!showResults">
+    <ion-item *ngFor="let module of modules">
+      <h2>{{module.label}}</h2>
+      <button ion-button clear item-end (click)="viewModule(module.id,module.label)">View</button>
+    </ion-item>
+  </ion-list>
+</ion-content>
