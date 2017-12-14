@@ -67,9 +67,6 @@ $app->post('/register', function() use ($app) {
             $email = $register['email'];
             $password = $register['password'];
 
-            // check for correct email and password
-            error_log("1->email: ".$email.">password:".$password);
-
             // validating email address
             validateEmail($email);
 
@@ -81,7 +78,7 @@ $app->post('/register', function() use ($app) {
                 $response["message"] = "You are successfully registered";
             } else if ($res == USER_CREATE_FAILED) {
                 $response["error"] = true;
-                $response["message"] = "Oops! An error occurred while registereing";
+                $response["message"] = "Oops! An error occurred while registering";
             } else if ($res == USER_ALREADY_EXISTED) {
                 $response["error"] = true;
                 $response["message"] = "Sorry, this email already existed";
@@ -89,6 +86,10 @@ $app->post('/register', function() use ($app) {
             // echo json response
             echoResponse(201, $response);
         });
+
+$app->options('/register', function() use ($app) {
+	setGeneriqueHeader();
+});
 
 /**
  * User Login
@@ -107,8 +108,6 @@ $app->post('/login', function() use ($app) {
 
 
             $db = new DbHandler();
-            // check for correct email and password
-            error_log("2->email: ".$email.">password:".$password);
 
             if ($db->checkLogin($email, $password)) {
                 // get the user by email
@@ -137,94 +136,15 @@ $app->post('/login', function() use ($app) {
 
         });
 
-$app->post('/updateuser', 'authenticate', function() use ($app) {
-    $data = json_decode($app->request()->getBody(),true);
-    // reading post params
-    $login = NULL;
-    $email = NULL;
-    $password = NULL;
-
-    $response = array();
-
-    if(isset($data['login'])){
-        $login = $data['login'];
-    }
-    if(isset($data['email'])){
-        $email = $data['email'];
-    }
-    if(isset($data['pass'])){
-        $password = $data['pass'];
-    }
-
-    $db = new DbHandler();
-    $headers = apache_request_headers();
-    $api_key = $headers['Authorization'];
-
-    if ($db->updateUser($login,$email,$password, $api_key)){
-        $response['error'] = false;
-    } else {
-        // user credentials are wrong
-        $response['error'] = true;
-        $response['message'] = 'An error occurred. Please try again';
-    }
-
-    echoResponse(200,$response);
-
-});
-
 $app->options('/login', function() use ($app) {
-    error_log("options for login");
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type');
-    header('Access-Control-Max-Age: 1728000');
-    header('Content-Length: 0');
-    header('Content-Type: application/json');
-    die();
+	setGeneriqueHeader();
 });
 
-$app->options('/register', function() use ($app) {
-    error_log("options for register");
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type');
-    header('Access-Control-Max-Age: 1728000');
-    header('Content-Length: 0');
-    header('Content-Type: application/json');
-    die();
-});
-
-$app->options('/updateuser', function() use ($app) {
-    error_log("options for update user");
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type, Authorization');
-    header('Access-Control-Max-Age: 1728000');
-    header('Content-Length: 0');
-    header('Content-Type: application/json');
-    die();
-});
-
-$app->options('/sellbook', function() use ($app) {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type, Authorization');
-    header('Access-Control-Max-Age: 1728000');
-    header('Content-Length: 0');
-    header('Content-Type: application/json');
-    die();
-});
-
-$app->options('/getLog', function() use ($app) {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
-    header('Access-Control-Allow-Headers: token, Content-Type, Authorization');
-    header('Access-Control-Max-Age: 1728000');
-    header('Content-Length: 0');
-    header('Content-Type: application/json');
-    die();
-});
-
+/**
+ * Get all books in the database
+ * url - /books
+ * method -GET
+ */
 $app->get('/books', function(){
             $response = array();
             $db = new DbHandler();
@@ -235,7 +155,7 @@ $app->get('/books', function(){
                   $response["error"] = false;
                   $response["books"] = array();
 
-                  // looping through result and preparing tasks array
+                  // looping through result and preparing books array
                    while ($books = $result->fetch_assoc()) {
                            $tmp = array();
                            $tmp["ISBN"] = $books["ISBN"];
@@ -251,6 +171,11 @@ $app->get('/books', function(){
             echoResponse(201,$response);
 });
 
+/**
+ * Get book in database with ISBN
+ * url - /books/:ISBN
+ * method -GET
+ */
 $app->get('/books/:ISBN', function($ISBN){
             $response = array();
             $db = new DbHandler();
@@ -261,7 +186,7 @@ $app->get('/books/:ISBN', function($ISBN){
                   $response["error"] = false;
                   $response["books"] = array();
 
-                  // looping through result and preparing tasks array
+                  // looping through result and preparing books array
                    while ($books = $result->fetch_assoc()) {
                            $tmp = array();
                            $tmp["ISBN"] = $books["ISBN"];
@@ -281,7 +206,7 @@ $app->get('/books/:ISBN', function($ISBN){
 /**
  * Search books info by name
  * method GET
- * url /searchbook
+ * url /search
  */
 $app->get('/search', function() use ($app) {
 
@@ -292,6 +217,7 @@ $app->get('/search', function() use ($app) {
     $googleQuery = str_replace(' ', '%20', $googleQuery);
     $resultQuery = file_get_contents($googleQuery);
     $decodeQuery = json_decode($resultQuery, true);
+
     $tableISBN = array();
     foreach ($decodeQuery['items'] as $value) {
         $temp = array();
@@ -331,26 +257,25 @@ $app->get('/search', function() use ($app) {
             array_push($tableISBN, $temp);
         }
     }
-    //echo json_encode($tableISBN,JSON_UNESCAPED_SLASHES);
     echoResponse(200, $tableISBN);
 });
 
 /**
- * Listing all tasks of particual user
+ * Listing modules
  * method GET
- * url /book
+ * url /modules
  */
 $app->get('/modules', function() {
             $response = array();
             $db = new DbHandler();
 
-            // fetching all user tasks
+            // fetching all modules
             $result = $db->getAllModule();
 
             $response["error"] = false;
             $response["modules"] = array();
 
-            // looping through result and preparing tasks array
+            // looping through result and preparing module array
             while ($modules = $result->fetch_assoc()) {
                 $tmp = array();
                 $tmp["id"] = $modules["ID"];
@@ -361,39 +286,78 @@ $app->get('/modules', function() {
             echoResponse(200, $response);
         });
 
-        /**
-         * Listing all tasks of particual user
-         * method GET
-         * url /book
-         */
-        $app->get('/modules/:id', function($id) {
-                    $response = array();
-                    $db = new DbHandler();
+/**
+ * Listing all books of particual module
+ * method GET
+ * url /modules/:id
+ */
+$app->get('/modules/:id', function($id) {
+            $response = array();
+            $db = new DbHandler();
 
-                    // fetching all user tasks
-                    $result = $db->getBookByModule($id);
-                    $response["error"] = false;
-                    $response["books"] = array();
+            // fetching all user tasks
+            $result = $db->getBookByModule($id);
+            $response["error"] = false;
+            $response["books"] = array();
 
-                    // looping through result and preparing tasks array
-                    while ($books = $result->fetch_assoc()) {
-                        $tmp = array();
-                        $tmp["ISBN"] = $books["ISBN"];
-                        $tmp["ID"] = $books["ID"];
-                        $tmp["price"] = $books["price"];
-                        $tmp["bookcondition"] = $books["bookcondition"];
-                        $tmp["title"] = $books["title"];
-                        $tmp["author"] = $books["author"];
-                        $tmp["picture"] = $books["picture"];
+            // looping through result and preparing tasks array
+            while ($books = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["ISBN"] = $books["ISBN"];
+                $tmp["ID"] = $books["ID"];
+                $tmp["price"] = $books["price"];
+                $tmp["bookcondition"] = $books["bookcondition"];
+                $tmp["title"] = $books["title"];
+                $tmp["author"] = $books["author"];
+                $tmp["picture"] = $books["picture"];
 
-                        array_push($response["books"], $tmp);
-                    }
+                array_push($response["books"], $tmp);
+            }
 
-                    echoResponse(200, $response);
-                });
+            echoResponse(200, $response);
+        });
 /*
  * ------------------------ METHODS WITH AUTHENTICATION ------------------------
  */
+
+$app->post('/updateuser', 'authenticate', function() use ($app) {
+    $data = json_decode($app->request()->getBody(),true);
+    // reading post params
+    $login = NULL;
+    $email = NULL;
+    $password = NULL;
+
+    $response = array();
+
+    if(isset($data['login'])){
+        $login = $data['login'];
+    }
+    if(isset($data['email'])){
+        $email = $data['email'];
+    }
+    if(isset($data['pass'])){
+        $password = $data['pass'];
+    }
+
+    $db = new DbHandler();
+    $headers = apache_request_headers();
+    $api_key = $headers['Authorization'];
+
+    if ($db->updateUser($login,$email,$password, $api_key)){
+        $response['error'] = false;
+    } else {
+        // user credentials are wrong
+        $response['error'] = true;
+        $response['message'] = 'An error occurred. Please try again';
+    }
+
+    echoResponse(200,$response);
+
+});
+
+$app->options('/updateuser', function() use ($app) {
+	setGeneriqueHeader();
+});
 
 /**
  * getLog for a user
@@ -434,69 +398,15 @@ $app->get('/getLog', 'authenticate', function() use ($app) {
 
 });
 
+$app->options('/getLog', function() use ($app) {
+	setGeneriqueHeader();
+});
 
 /**
- * Listing all tasks of particual user
- * method GET
- * url /book
- */
-$app->get('/tasks', 'authenticate', function() {
-            global $user_id;
-            $response = array();
-            $db = new DbHandler();
-
-            // fetching all user tasks
-            $result = $db->getAllUserTasks($user_id);
-
-            $response["error"] = false;
-            $response["tasks"] = array();
-
-            // looping through result and preparing tasks array
-            while ($task = $result->fetch_assoc()) {
-                $tmp = array();
-                $tmp["id"] = $task["ID"];
-                $tmp["task"] = $task["task"];
-                $tmp["status"] = $task["status"];
-                $tmp["registered"] = $task["registered"];
-                array_push($response["tasks"], $tmp);
-            }
-
-            echoResponse(200, $response);
-        });
-
-/**
- * Listing single task of particual user
- * method GET
- * url /tasks/:id
- * Will return 404 if the task doesn't belongs to user
- */
-$app->get('/tasks/:id', 'authenticate', function($task_id) {
-            global $user_id;
-            $response = array();
-            $db = new DbHandler();
-
-            // fetch task
-            $result = $db->getTask($task_id, $user_id);
-
-            if ($result != NULL) {
-                $response["error"] = false;
-                $response["id"] = $result["ID"];
-                $response["task"] = $result["task"];
-                $response["status"] = $result["status"];
-                $response["registered"] = $result["registered"];
-                echoResponse(200, $response);
-            } else {
-                $response["error"] = true;
-                $response["message"] = "The requested resource doesn't exists";
-                echoResponse(404, $response);
-            }
-        });
-
-/**
- * Creating new book in db
+ * Buy new book in db
  * method POST
- * params - login
- * url - /book/
+ * params - authkey
+ * url - /buybook/
  */
 $app->post('/buybook', 'authenticate', function() use ($app){
 
@@ -513,20 +423,11 @@ $app->post('/buybook', 'authenticate', function() use ($app){
             $bookcondition = $book['bookCondition'];
             $status = $book['status'];
 
-
-            // creating new task
             $req = $db->buyBook($ISBN,$modules,$sellerID,$buyerID,$bookcondition,$price,$status);
 
             if ($req == TRUE) {
                 $response["error"] = false;
                 $response["message"] = "Succesfully bought";
-                /*$response["ISBN"] = $req['ISBN'];
-                $response["modules"] = $req['modules'];
-                /*$response["sellerID"] =  $sellerID;
-                $response["buyerID"] = $buyerID;
-                $response["price"] = $price;
-                $response["bookcondition"] = $bookcondition;
-                $response["status"] = $status;*/
                 echoResponse(201, $response);
             } else {
                 $response["error"] = true;
@@ -538,8 +439,8 @@ $app->post('/buybook', 'authenticate', function() use ($app){
 /**
  * Creating new book in db
  * method POST
- * params - login
- * url - /book/
+ * params - authkey
+ * url - /sellbook/
  */
 $app->post('/sellbook', 'authenticate', function() use ($app){
 
@@ -582,61 +483,9 @@ $app->post('/sellbook', 'authenticate', function() use ($app){
             }
         });
 
-
-
-/**
- * Updating existing task
- * method PUT
- * params task, status
- * url - /tasks/:id
- */
-$app->put('/tasks/:id', 'authenticate', function($task_id) use($app) {
-            // check for required params
-            verifyRequiredParams(array('task', 'status'));
-
-            global $user_id;
-            $task = $app->request->put('task');
-            $status = $app->request->put('status');
-
-            $db = new DbHandler();
-            $response = array();
-
-            // updating task
-            $result = $db->updateTask($user_id, $task_id, $task, $status);
-            if ($result) {
-                // task updated successfully
-                $response["error"] = false;
-                $response["message"] = "Task updated successfully";
-            } else {
-                // task failed to update
-                $response["error"] = true;
-                $response["message"] = "Task failed to update. Please try again!";
-            }
-            echoResponse(200, $response);
-        });
-
-/**
- * Deleting task. Users can delete only their tasks
- * method DELETE
- * url /tasks
- */
-$app->delete('/tasks/:id', 'authenticate', function($task_id) use($app) {
-            global $user_id;
-
-            $db = new DbHandler();
-            $response = array();
-            $result = $db->deleteTask($user_id, $task_id);
-            if ($result) {
-                // task deleted successfully
-                $response["error"] = false;
-                $response["message"] = "Task deleted succesfully";
-            } else {
-                // task failed to delete
-                $response["error"] = true;
-                $response["message"] = "Task failed to delete. Please try again!";
-            }
-            echoResponse(200, $response);
-        });
+$app->options('/sellbook', function() use ($app) {
+	setGeneriqueHeader();
+});
 
 /**
  * Verifying required params posted or not
@@ -714,6 +563,20 @@ function convertLogRequest($recup)
     $test['price'] = $recup['price'];
     $test['status'] = $recup['status'];
     return $test;
+}
+
+/**
+ * set the header of the request for browser security
+ */
+function setGeneriqueHeader()
+{
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
+    header('Access-Control-Allow-Headers: token, Content-Type');
+    header('Access-Control-Max-Age: 1728000');
+    header('Content-Length: 0');
+    header('Content-Type: application/json');
+    die();
 }
 
 $app->run();
