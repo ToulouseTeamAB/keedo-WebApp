@@ -1,10 +1,6 @@
 <?php
 /**
  * Class to handle all db operations
- * This class will have CRUD methods for database tables
- *
- * @author Ravi Tamada
- * @link URL Tutorial link
  */
 class DbHandler {
 
@@ -17,13 +13,13 @@ class DbHandler {
         $this->conn = $db->connect();
     }
 
-    /* ------------- `users` table method ------------------ */
 
     /**
      * Creating new user
      * @param String $login User full login
      * @param String $email User login email id
      * @param String $password User login password
+     * @return Success or type of error
      */
     public function createUser($login, $email, $password) {
         require_once 'PassHash.php';
@@ -105,7 +101,7 @@ class DbHandler {
     /**
      * Checking for duplicate user by email address
      * @param String $email email to check in db
-     * @return boolean
+     * @return boolean :true if user already exist
      */
     private function isUserExists($email) {
         $stmt = $this->conn->prepare("SELECT id from keedo_users WHERE email = ?");
@@ -121,6 +117,7 @@ class DbHandler {
     /**
      * Fetching user by email
      * @param String $email User email id
+     * @return User if found
      */
     public function getUserByEmail($email) {
         $stmt = $this->conn->prepare("SELECT ID,login, email, api_key, status, registered FROM keedo_users WHERE email = ?");
@@ -143,27 +140,11 @@ class DbHandler {
         }
     }
 
-    /**
-     * Fetching user api key
-     * @param String $user_id user id primary key in user table
-     */
-    public function getApiKeyById($user_id) {
-        $stmt = $this->conn->prepare("SELECT api_key FROM keedo_users WHERE ID = ?");
-        $stmt->bind_param("i", $user_id);
-        if ($stmt->execute()) {
-            // $api_key = $stmt->get_result()->fetch_assoc();
-            // TODO
-            $stmt->bind_result($api_key);
-            $stmt->close();
-            return $api_key;
-        } else {
-            return NULL;
-        }
-    }
 
     /**
      * Fetching user id by api key
      * @param String $api_key user api key
+     * @return $user_id
      */
     public function getUserId($api_key) {
         $stmt = $this->conn->prepare("SELECT ID FROM keedo_users WHERE api_key = ?");
@@ -182,7 +163,7 @@ class DbHandler {
      * Validating user api key
      * If the api key is there in db, it is a valid key
      * @param String $api_key user api key
-     * @return boolean
+     * @return boolean : true is key is valid
      */
     public function isValidApiKey($api_key) {
         $stmt = $this->conn->prepare("SELECT ID from keedo_users WHERE api_key = ?");
@@ -194,6 +175,14 @@ class DbHandler {
         return $num_rows > 0;
     }
 
+    /**
+         * Updating user information
+         * @param String $login is user login
+         * @param String $email is user email
+         * @param String $password is user pass
+         * @param String $api_key is corresponding key to user
+         * @return boolean : True if any of the arguments is incorrect
+         */
     public function updateUser($login, $email, $password, $api_key){
         require_once 'PassHash.php';
         if($login != NULL){
@@ -215,7 +204,11 @@ class DbHandler {
             $stmt->execute();
             $stmt->close();
         }
-        return TRUE;
+        if($login != NULL and $password != NULL and $email != NULL){
+         return TRUE;
+         }else{
+         return FALSE;
+         }
     }
 
       /**
@@ -230,6 +223,12 @@ class DbHandler {
      * Adding a new book available in database
      * @param String $ISBN is ID of the book
      * @param String $modules is the subject (computing/sciences/law/etc..)
+     * @param Integer $userID is the ID associate to user
+     * @param Double $price is the price of book
+     * @param String $bookcondition is the condition of book
+     * @param String $title is the title of book
+     * @param String $picture is link of thumbnails of book
+     * @return boolean : true is successfully sold
      */
     public function sellBook($ISBN,$module,$userID,$price,$bookcondition, $title, $author, $picture) {
         $stmt = $this->conn->prepare("INSERT INTO keedo_books(ISBN,module,title,author,picture) VALUES (?,?,?,?,?)");
@@ -248,7 +247,14 @@ class DbHandler {
             return NULL;
           }
     }
-
+    /**
+     * Associating a user with a book
+     * @param String $ISBN is ID of the book
+     * @param String $modules is the subject (computing/sciences/law/etc..)
+     * @param Double $price is the price of book
+     * @param String $bookcondition is the condition of book
+     * @return boolean : true if request is done
+     */
     public function addOwner($ISBN,$userID,$price,$bookcondition) {
             $stmt = $this->conn->prepare("INSERT INTO keedo_books_own (ISBN,user,price,bookcondition) VALUES (?,?,?,?)");
             $stmt->bind_param("sids",$ISBN, $userID, $price, $bookcondition);
@@ -264,7 +270,8 @@ class DbHandler {
 
     /**
          * Fetching single book by ISBN
-         * @param String $task_id id of the task
+         * @param String $ISBN is ISBN of the book
+         * @return $books
          */
         public function getBookByISBN($ISBN) {
             $stmt = $this->conn->prepare("SELECT kbo.* FROM keedo_books kb, keedo_books_own kbo WHERE kbo.ISBN = ? AND kb.ISBN=kbo.ISBN");
@@ -277,17 +284,10 @@ class DbHandler {
                   return NULL;
               }
           }
-/**
-         * Fetching single book by author
-         * @param String $task_id id of the task
-         */
-        public function getBookByAuthor($ISBN) {
-            //TODO
 
-          }
     /**
-     * Fetching books by module
-     * @param String $task_id id of the task
+     * Fetching books all books in database
+     * @return $books
      */
     public function getAllBook() {
         $stmt = $this->conn->prepare("SELECT * FROM keedo_books_own kdo WHERE ISBN IN (SELECT ISBN FROM keedo_books kb WHERE kdo.ISBN=kb.ISBN)");
@@ -299,7 +299,8 @@ class DbHandler {
 
     /**
      * Fetching books by module
-     * @param String $task_id id of the task
+     * @param String $id is associating id of the book
+     * @return books
      */
     public function getBookByModule($id) {
         $stmt = $this->conn->prepare("SELECT * FROM keedo_books kb1, keedo_books_own kdo WHERE kdo.ISBN IN (SELECT ISBN FROM keedo_books kb WHERE module=? AND kdo.ISBN=kb.ISBN);");
@@ -312,7 +313,7 @@ class DbHandler {
 
     /**
      * Fetching all the modules
-     * @param String $task_id id of the task
+     * @return modules
      */
     public function getAllModule() {
         $stmt = $this->conn->prepare("SELECT * FROM keedo_books_modules");
@@ -381,42 +382,25 @@ class DbHandler {
         return $ISBNReturn;
     }
 
-public function buyBook($ISBN,$module,$sellerID,$buyerID,$bookcondition,$price,$status){
+    /**
+     * get advert for user
+     * @param String $idUser User ID
+     * @return array for the user
+     */
+    public function buyBook($ISBN,$module,$sellerID,$buyerID,$bookcondition,$price,$status){
 
+        //not implemented due to client specification (no need to have payment at this point)
 
-              /* //INSERT INTO keedo_books_selling
-               $stmt = $this->conn->prepare("INSERT INTO keedo_books_selling(ISBN, sellerID, buyerID, bookCondition, price, status) VALUES (?,?,?,?,?,?)");
-               $stmt->bind_param("siisds",$ISBN,$sellerID,$buyerID,$bookcondition,$price,$status);
-               $add=$stmt->execute();
-               $stmt->close();
-
-               if($add =! NULL){
-                    //COUNT to check the number of book of this ISBN
-                    $count = $this->checkBookInDatabase($ISBN);
-                    //Delete the book
-                    $res=$this->deleteAvailableBook($ISBN,$sellerID);
-                    //If last book delete ISBN from keedo_books
-                    if($count==1){
-                        $stmt2= $this->conn->prepare("DELETE FROM keedo_books WHERE ISBN=?");
-                        $stmt2->bind_param("s",$ISBN);
-                        $stmt2->execute();
-                        $stmt2->close();
-                    }
-                    $stmt = $this->conn->prepare("SELECT * FROM keedo_books_selling WHERE ISBN=? AND sellerID=? AND buyerID=?");
-                    $stmt->bind_param("sii",$ISBN,$sellerID,buyerID);
-                    $book=$stmt->execute();
-                    return $book;
-               } else {
-                    return FALSE;
-               }*/
                return TRUE;
       }
 
 
 
     /**
-    * Move available book in the sold books
-    * @param String
+    * Remove book an available during a transaction
+    * @param String $ISBN is ISBN of book
+    * @param Integer $sellerID is id of the seller
+    * @return boolean : True if query is successfully done
     */
     public function deleteAvailableBook($ISBN,$sellerID){
           $stmt = $this->conn->prepare("DELETE FROM keedo_books_own WHERE ISBN=? AND user=?");
@@ -427,54 +411,6 @@ public function buyBook($ISBN,$module,$sellerID,$buyerID,$bookcondition,$price,$
               return FALSE;
           }
           $stmt->close();
-    }
-
-
-    /**
-     * Updating task
-     * @param String $task_id id of the task
-     * @param String $task task text
-     * @param String $status task status
-     */
-    public function updateTask($user_id, $task_id, $task, $status) {
-        $stmt = $this->conn->prepare("UPDATE tasks t, user_tasks ut set t.task = ?, t.status = ? WHERE t.ID = ? AND t.ID = ut.task_ID AND ut.user_ID = ?");
-        $stmt->bind_param("siii", $task, $status, $task_id, $user_id);
-        $stmt->execute();
-        $num_affected_rows = $stmt->affected_rows;
-        $stmt->close();
-        return $num_affected_rows > 0;
-    }
-
-    /**
-     * Deleting a task
-     * @param String $task_id id of the task to delete
-     */
-    public function deleteTask($user_id, $task_id) {
-        $stmt = $this->conn->prepare("DELETE t FROM tasks t, user_tasks ut WHERE t.ID = ? AND ut.task_id = t.ID AND ut.user_id = ?");
-        $stmt->bind_param("ii", $task_id, $user_id);
-        $stmt->execute();
-        $num_affected_rows = $stmt->affected_rows;
-        $stmt->close();
-        return $num_affected_rows > 0;
-    }
-
-    /* ------------- `user_tasks` table method ------------------ */
-
-    /**
-     * Function to assign a task to user
-     * @param String $user_id id of the user
-     * @param String $task_id id of the task
-     */
-    public function createUserTask($user_id, $task_id) {
-        $stmt = $this->conn->prepare("INSERT INTO user_tasks(user_id, task_id) values(?, ?)");
-        $stmt->bind_param("ii", $user_id, $task_id);
-        $result = $stmt->execute();
-
-        if (false === $result) {
-            die('execute() failed: ' . htmlspecialchars($stmt->error));
-        }
-        $stmt->close();
-        return $result;
     }
 
 }
